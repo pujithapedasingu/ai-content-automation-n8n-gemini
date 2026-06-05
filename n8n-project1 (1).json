@@ -1,0 +1,291 @@
+{
+  "name": "n8n-project1",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Untitled spreadsheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EqiT05eeStHvmfhFOzT7yPE1WpYntiwE_ASBGQiVL9o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EqiT05eeStHvmfhFOzT7yPE1WpYntiwE_ASBGQiVL9o/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        16
+      ],
+      "id": "70130436-0e15-4130-9479-5b01e1b79c6b",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "1LHOJdlaSM2IaQLr",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        224
+      ],
+      "id": "bd27d74e-cb7e-477d-ac65-f6fe45a88b16",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GKAEN0touBkYBApw",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        -48
+      ],
+      "id": "082e773a-22d7-4191-8c70-e99a11a90607",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GKAEN0touBkYBApw",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "person": "-ynoVdU_v8",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        688,
+        -224
+      ],
+      "id": "e6bd2494-225e-47c4-977a-bb1ad95a3c80",
+      "name": "Create a post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "PojzoXLvXs7Z5i9b",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "= System: \"You are a social media strategist with expertise in content adaptation\"\n\n  User: \"Analyze this article and create a summary that\n  1. Captures the 3 most important insights\n  2. Includes any actionable advice or tips\n  3. Maintains the original tone and perspecve\n  4. Highlights implications for the target audience\n  5. Stays under 200 words for social media adaptation\n  \n  Article: {{$json.newsarticle}}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -96,
+        16
+      ],
+      "id": "7af065b5-ca53-49ff-838c-786bb02df3e4",
+      "name": "summarizing article"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI industry expert.\n\nBased on the article summary below, create a professional LinkedIn post.\n\nRequirements:\n- Start directly with the content (do NOT write \"Here is a LinkedIn post\")\n- Do NOT use separators like \"---\"\n- Maximum 2000 characters\n- Professional and engaging tone\n- Highlight key insights\n- Explain business implications\n- Include a question to encourage discussion\n- Add 3-5 relevant hashtags at the end\n\nArticle Summary:  {{ $json.text }}\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        320,
+        -224
+      ],
+      "id": "da60f9f7-a708-44f0-99f9-b6c81677e075",
+      "name": "Linkedin post"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        352
+      ],
+      "id": "7c54aa72-045b-4611-97d3-593c4aa2f648",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GKAEN0touBkYBApw",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "pedasingupujitha@gmail.com",
+        "subject": "AI Article Summary",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        160
+      ],
+      "id": "d65948f2-7a55-43c5-b58c-5be00888a09f",
+      "name": "Send a message",
+      "webhookId": "5abfa71f-a8c5-440a-bf97-2d5438b49027",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "V08Cb9gc9h1UHPRl",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Based on the article summary below, write a professional email.\n\nStructure:\n\n<p>Hello,</p>\n\n<p>I hope you're doing well. Here's a concise summary of the article.</p>\n\n<ul>\n<li>Key insight 1</li>\n<li>Key insight 2</li>\n<li>Key insight 3</li>\n</ul>\n\n<p>In conclusion, ...</p>\n\n<p>Thank you for reading.</p>\n\nRules:\n- Return only HTML.\n- No markdown.\n- No subject line.\n- No recipient name.\n- No signature.\n\nArticle Summary:\n{{ $json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        320,
+        160
+      ],
+      "id": "d03ce21b-f719-44dc-8676-14cafc9e0b9e",
+      "name": "gmail send msg"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "summarizing article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "summarizing article",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Linkedin post",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "summarizing article": {
+      "main": [
+        [
+          {
+            "node": "Linkedin post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "gmail send msg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Linkedin post": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "gmail send msg",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gmail send msg": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c65fda77-4c8a-466e-8a81-96d090106ac3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "718ab42b3b5031d6e263bf31cfbb9e01432111ab76e0c905954e008bd36d3a55"
+  },
+  "id": "9mUtzWIVXuNkHEok",
+  "tags": []
+}
